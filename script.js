@@ -10,6 +10,8 @@ $(document).ready(function () {
   var locationHandler = new LocationHandler({
     locationWillChange: function (changeObj)
     {
+      $('<p>- location will change... in changeObj.state we read: ' + $.param(changeObj.state) + '</p>').css('height', 0).appendTo($("#logs")).animate({height: 16});
+      return 500;
     },
     nextLocationWillLoad: function (changeObj)
     {
@@ -53,8 +55,10 @@ $(document).ready(function () {
   });
 
 
-  $("a").bind({
-    click: locationHandler.handleClickWithLocationHandler(locationHandler)
+  $("a").each(function (k, link) {
+    $(link).bind({
+      click: locationHandler.handleClickWithLocationHandler(locationHandler, {customParam: $(link).attr('class')})
+    });
   });
 
 });

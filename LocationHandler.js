@@ -43,7 +43,7 @@ function LocationHandler (params)
 
   window.onpopstate = function (historyObj) {
     if (historyObj && historyObj.state && historyObj.state.url)
-      self.changeLocation(historyObj.state.url, true);
+      self.changeLocation(historyObj.state.url, true, historyObj.state.customParams);
   };
 
 }
@@ -179,7 +179,7 @@ LocationHandler.prototype.nextLocationLoad = function (changeObj)
 }
 
 
-LocationHandler.prototype.changeLocation = function (newLocation, isFromHistory)
+LocationHandler.prototype.changeLocation = function (newLocation, isFromHistory, customParams)
 {
   var self = this;
   if (!self.active) return;
@@ -194,7 +194,8 @@ LocationHandler.prototype.changeLocation = function (newLocation, isFromHistory)
 
     var changeObj = {
       from: self.get('location'),
-      to: newLocation
+      to: newLocation,
+      state: customParams
     };
 
     var timer = self.hooks.locationWillChange(changeObj);
@@ -209,7 +210,7 @@ LocationHandler.prototype.changeLocation = function (newLocation, isFromHistory)
 
       self.set('location', newLocation);
 
-      if (!isFromHistory) window.history.pushState({url: newLocation}, '', newLocation);
+      if (!isFromHistory) window.history.pushState({url: newLocation, customParams: customParams}, '', newLocation);
 
       changeObj.data = self.getCache(changeObj.to);
       changeObj.fromCache = !(!changeObj.data);
@@ -220,7 +221,7 @@ LocationHandler.prototype.changeLocation = function (newLocation, isFromHistory)
 }
 
 
-LocationHandler.prototype.handleClickWithLocationHandler = function (locationHandler)
+LocationHandler.prototype.handleClickWithLocationHandler = function (locationHandler, customParams)
 {
   if (!locationHandler.check()) return function () {};
 
@@ -230,7 +231,7 @@ LocationHandler.prototype.handleClickWithLocationHandler = function (locationHan
 
     var newLocation = this.href; // `this` is the clicked element
 
-    locationHandler.changeLocation(newLocation);
+    locationHandler.changeLocation(newLocation, false, customParams);
   }
 }
 
