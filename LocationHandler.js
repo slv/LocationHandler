@@ -157,10 +157,10 @@ LocationHandler.prototype.nextLocationLoad = function (changeObj)
               mBody = patternBody.exec(response),
               data = '';
 
-          if (mCustom.length && typeof mCustom[1] != "undefined") {
+          if (mCustom && mCustom.length && typeof mCustom[1] != "undefined") {
             data = mCustom[1];
           }
-          else if (mBody.length && typeof mBody[1] != "undefined") {
+          else if (mBody && mBody.length && typeof mBody[1] != "undefined") {
             data = mBody[1];
           }
 
@@ -172,7 +172,7 @@ LocationHandler.prototype.nextLocationLoad = function (changeObj)
           changeObj.toTitle = title;
           changeObj.data = data;
 
-          self.setCache(changeObj.to, data);
+          self.setCache(changeObj.to, {data: data, title: title});
 
           var timer = self.hooks.nextLocationIsReady(changeObj);
           if (typeof timer != "number") timer = 0;
@@ -222,8 +222,14 @@ LocationHandler.prototype.changeLocation = function (newLocation, isFromHistory,
 
       if (!isFromHistory) window.history.pushState({url: newLocation, customParams: customParams}, '', newLocation);
 
-      changeObj.data = self.getCache(changeObj.to);
-      changeObj.fromCache = !(!changeObj.data);
+      changeObj.fromCache = false;
+      var fromCache = self.getCache(changeObj.to);
+
+      if (!(!fromCache)) {
+        changeObj.fromCache = true
+        changeObj.data = fromCache.data;
+        changeObj.toTitle = fromCache.title;
+      }
 
       self.nextLocationLoad(changeObj);
     }, timer);
