@@ -6,11 +6,12 @@
 //
 // dependencies: jQuery 1.7
 
-function LocationHandler (params)
+function LocationHandler (params, jQuery)
 {
   if (!this.check()) return;
 
   var self = this;
+      self.$ = jQuery || $,
       self.active = true,
       self.attributes = {},
       self.hooks = {},
@@ -27,7 +28,7 @@ function LocationHandler (params)
     "nextLocationThrowsException"
   ];
 
-  $.each(hooks, function (k, hook) {
+  self.$.each(hooks, function (k, hook) {
     self.hooks[hook] = (typeof params[hook] != "function") ? function () {} : params[hook];
   });
 
@@ -35,7 +36,7 @@ function LocationHandler (params)
     hostname: location.host
   };
 
-  $.each(attributes, function (attribute, value) {
+  self.$.each(attributes, function (attribute, value) {
     if (typeof params[attribute] != "undefined") self.attributes[attribute] = params[attribute]; else self.attributes[attribute] = value;
   });
 
@@ -134,7 +135,7 @@ LocationHandler.prototype.nextLocationLoad = function (changeObj)
     }
     else {
 
-      $.ajax({
+      self.$.ajax({
         url: changeObj.to,
         method: 'get',
         dataType: 'text',
@@ -150,13 +151,22 @@ LocationHandler.prototype.nextLocationLoad = function (changeObj)
         },
         success: function (response) {
 
-          var patternBody = /<body[^>]*>((.|[\n\r])*)<\/body>/im;
+          var patternCustom = /<!--LocationHandlerStart-->((.|[\n\r])*)<!--LocationHandlerEnd-->/im,
+              patternBody = /<body[^>]*>((.|[\n\r])*)<\/body>/im,
+              mCustom = patternCustom.exec(response),
               mBody = patternBody.exec(response),
-              data = typeof mBody[1] != "undefined" ? mBody[1] : '';
+              data = '';
+
+          if (mCustom.length && typeof mCustom[1] != "undefined") {
+            data = mCustom[1];
+          }
+          else if (mBody.length && typeof mBody[1] != "undefined") {
+            data = mBody[1];
+          }
 
           var patternTitle = /<title[^>]*>((.|[\n\r])*)<\/title>/im;
               mTitle = patternTitle.exec(response),
-              title = typeof mTitle[1] != "undefined" ? mTitle[1] : '';
+              title = mTitle.length && typeof mTitle[1] != "undefined" ? mTitle[1] : '';
 
           changeObj.fromTitle = document.title;
           changeObj.toTitle = title;
@@ -261,7 +271,7 @@ LocationHandler.prototype.set = function (attr, value)
     attributes = attr;
   }
 
-  $.each(attributes, function (att, value)
+  self.$.each(attributes, function (att, value)
   {
     if (typeof value == "function") {
 

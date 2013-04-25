@@ -1,4 +1,4 @@
-$(document).ready(function () {
+jQuery(document).ready(function ($) {
 
   function getTime () {
     var d = new Date();
@@ -52,7 +52,7 @@ $(document).ready(function () {
     {
 
     }
-  });
+  }, $);
 
 
   $("a").each(function (k, link) {
