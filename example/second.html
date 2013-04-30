@@ -8,8 +8,8 @@
     <link rel="stylesheet" type="text/css" href="./assets/styles.css">
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script type="text/javascript" src="LocationHandler.js"></script>
-    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="../LocationHandler.js"></script>
+    <script type="text/javascript" src="./assets/script.js"></script>
 
     <title>Second Page - Test Location Handler</title>
 
@@ -28,7 +28,7 @@
 
       <div id="content">
         <div class="second-style">
-          <p>...than instantiate LocationHandler and pass to its constructor these 6 hooks (or select any):</p>
+          <p>...than instantiate LocationHandler and pass to its constructor these 6 hooks and the jQuery object:</p>
           <textarea rows="22">var locationHandler = new LocationHandler({
   locationWillChange: function (changeObj)
   {
@@ -48,7 +48,7 @@
   nextLocationThrowsException: function (changeObj)
   {
   }
-});</textarea>
+}, jQuery);</textarea>
           <p>- if "locationWillChange" returns false, page change is cancelled</p>
           <p>- every hook can return an integer that cause a delay in the trigger of next steps...<br />
             you can return 600 in "nextLocationWillLoad" to wait for 600 milliseconds while (for example) executing unload animations</p>
@@ -58,7 +58,7 @@
   click: locationHandler.handleClickWithLocationHandler(locationHandler)
 });</textarea>
           <p>If you want to trigger change location in other ways simply call method "changeLocation" and pass it the new location:</p>
-          <textarea>locationHandler.changeLocation("http://localhost/LocationHandler/third.html");</textarea>
+          <textarea>locationHandler.changeLocation("http://localhost/LocationHandler/example/third.html");</textarea>
         </div>
       </div>
 

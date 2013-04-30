@@ -7,9 +7,9 @@ Javascript Library for manage url changes in browser. jQuery needed
 
 ### How to use
 
-* on document ready, instantiate 'LocationHandler' and pass it the hooks you want
+* on document ready, instantiate 'LocationHandler' and pass it the hooks you want and the jQuery object
 
-        $(document).ready(function () {
+        jQuery(document).ready(function () {
             var locationHandler = new LocationHandler({
                 locationWillChange: function (changeObj)
                 {
@@ -42,7 +42,7 @@ Javascript Library for manage url changes in browser. jQuery needed
                     // handle here errors
                 }
             });
-        });
+        }, jQuery);
 
 * now you have 'locationHandler' object with some methods:
 
@@ -52,11 +52,11 @@ Javascript Library for manage url changes in browser. jQuery needed
 >
 >
 >    'handleClickWithLocationHandler' will return a function to attach at the html "a" tag, it parses href and call appropriate 'changeLocation' method automatically.
->    you must pass 'locationHandler' object as unique param
+>    you must pass 'locationHandler' object as first param and optionally an object that LocationHandler will pass inside the changeObj.state property
 >    example:
 >
 >        $("a").bind({
->            click: locationHandler.handleClickWithLocationHandler(locationHandler)
+>            click: locationHandler.handleClickWithLocationHandler(locationHandler, {aParam: 'a value', anotherParam: 'another value'})
 >        });
 
 * every time you want to change location using the lib, you have to call appropriate methods.
@@ -71,19 +71,47 @@ Javascript Library for manage url changes in browser. jQuery needed
 >            fromCache: true/false, // if content comes from cache
 >            data: "some html content...", // the content of tag "body" of ajax response
 >            fromTitle: "Third Page - Test Location Handler",
->            toTitle: "Second Page - Test Location Handler"
+>            toTitle: "Second Page - Test Location Handler",
+>            state: {aParam: 'a value', anotherParam: 'another value'},
 >        }
+
+
+* If you want to pass smaller part of the next page inside changeObj.data, simply prepare all pages with these comments:
+
+>    ...
+>    <body>
+>    <div id="content">
+>        <div id="inner-content">
+>
+>            <!--LocationHandlerStart-->
+>            <div id="async-content">
+>                <p>some contents....</p>
+>            </div>
+>            <!--LocationHandlerEnd-->
+>
+>        </div>
+>    </div>
+>    ...
+>
+>    and in changeObj you'll find only the contents between <!--LocationHandlerStart--> and <!--LocationHandlerEnd-->
 
 
 ### Full Example
 
-    $(document).ready(function () {
+    jQuery(document).ready(function () {
 
         var locationHandler = new LocationHandler({
 
             nextLocationWillLoad: function (changeObj)
             {
-                // ex. here we can mask the page
+                // here we can read from changeObj.state if there is custom params
+
+                if (changeObj.state && changeObj.state.fadeOut) {
+                    // ex. here we can fade out the page
+                }
+                else {
+                    // default animation
+                }
             },
             nextLocationIsReady: function (changeObj)
             {
@@ -113,4 +141,4 @@ Javascript Library for manage url changes in browser. jQuery needed
             click: locationHandler.handleClickWithLocationHandler(locationHandler)
         });
 
-    });
+    }, jQuery);

@@ -8,10 +8,10 @@
     <link rel="stylesheet" type="text/css" href="./assets/styles.css">
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script type="text/javascript" src="LocationHandler.js"></script>
-    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="../LocationHandler.js"></script>
+    <script type="text/javascript" src="./assets/script.js"></script>
 
-    <title>Third Page - Test Location Handler</title>
+    <title>First Page - Test Location Handler</title>
 
   </head>
   <body>
@@ -27,16 +27,13 @@
       </ul>
 
       <div id="content">
-        <div class="third-style">
-          <p>Inside every hook you get the object "changeObj" with these attributes:<br /><br /></p>
-          <textarea rows="9">{
-  from: "http://localhost/LocationHandler/third.html",
-  to: "http://localhost/LocationHandler/second.html",
-  fromCache: true/false, // if content comes from cache
-  data: "some html content...", // the content of tag "body" of ajax response
-  fromTitle: "Third Page - Test Location Handler",
-  toTitle: "Second Page - Test Location Handler"
-}</textarea>
+        <div class="first-style">
+          <h1>Content of page <span class="number">1</span></h1>
+          <p>Build your HTML page as you want...</p>
+          <p>Simply remember that in all pages you have to put the body tag:</p>
+          <p>&lt;body&gt;...&lt;/body&gt;</p>
+          <p>or also:</p>
+          <p>&lt;body class="some classes" attributes="..." id="an-id"&gt;...&lt;/body&gt;</p>
         </div>
       </div>
 

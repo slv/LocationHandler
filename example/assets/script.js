@@ -55,6 +55,8 @@ jQuery(document).ready(function ($) {
   }, $);
 
 
+  // bind click on link passing as custom params the class attribute of each link, we'll read it inside hooks in changeObj.state
+
   $("a").each(function (k, link) {
     $(link).bind({
       click: locationHandler.handleClickWithLocationHandler(locationHandler, {customParam: $(link).attr('class')})
