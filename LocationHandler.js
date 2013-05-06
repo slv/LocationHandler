@@ -8,15 +8,16 @@
 
 function LocationHandler (params, jQuery)
 {
-  if (!this.check()) return;
+  if (!this.check()) return this;
 
-  var self = this;
-      self.$ = jQuery || $,
-      self.active = true,
-      self.attributes = {},
-      self.hooks = {},
-      self.cache = {},
+  var self = this,
       params = params || {};
+
+  self.$ = jQuery || $;
+  self.active = true;
+  self.attributes = {};
+  self.hooks = {};
+  self.cache = {};
 
   // Hooks
   var hooks = [
@@ -47,6 +48,9 @@ function LocationHandler (params, jQuery)
       self.changeLocation(historyObj.state.url, true, historyObj.state.customParams);
   };
 
+  window.history.pushState({url: location.href, customParams: {}}, '', location.href);
+
+  return this;
 }
 
 
@@ -153,15 +157,22 @@ LocationHandler.prototype.nextLocationLoad = function (changeObj)
 
           var patternCustom = /<!--LocationHandlerStart-->((.|[\n\r])*)<!--LocationHandlerEnd-->/im,
               patternBody = /<body[^>]*>((.|[\n\r])*)<\/body>/im,
+              patternBodyClass = /<body[^>]*class="([^"]*)"/im,
               mCustom = patternCustom.exec(response),
               mBody = patternBody.exec(response),
-              data = '';
+              mBodyClass = patternBodyClass.exec(response),
+              data = '',
+              bodyClass = '';
 
           if (mCustom && mCustom.length && typeof mCustom[1] != "undefined") {
             data = mCustom[1];
           }
           else if (mBody && mBody.length && typeof mBody[1] != "undefined") {
             data = mBody[1];
+          }
+
+          if (mBodyClass && mBodyClass.length && typeof mBodyClass[1] != "undefined") {
+            bodyClass = mBodyClass[1];
           }
 
           var patternTitle = /<title[^>]*>((.|[\n\r])*)<\/title>/im;
@@ -171,8 +182,9 @@ LocationHandler.prototype.nextLocationLoad = function (changeObj)
           changeObj.fromTitle = document.title;
           changeObj.toTitle = title;
           changeObj.data = data;
+          changeObj.bodyClass = bodyClass;
 
-          self.setCache(changeObj.to, {data: data, title: title});
+          self.setCache(changeObj.to, {data: data, title: title, bodyClass: bodyClass});
 
           var timer = self.hooks.nextLocationIsReady(changeObj);
           if (typeof timer != "number") timer = 0;
@@ -191,6 +203,11 @@ LocationHandler.prototype.nextLocationLoad = function (changeObj)
 
 LocationHandler.prototype.changeLocation = function (newLocation, isFromHistory, customParams)
 {
+  if (!this.check()) {
+    location.href = newLocation;
+    return;
+  }
+
   var self = this;
   if (!self.active) return;
 
@@ -229,6 +246,7 @@ LocationHandler.prototype.changeLocation = function (newLocation, isFromHistory,
         changeObj.fromCache = true
         changeObj.data = fromCache.data;
         changeObj.toTitle = fromCache.title;
+        changeObj.bodyClass = fromCache.bodyClass;
       }
 
       self.nextLocationLoad(changeObj);
