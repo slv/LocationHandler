@@ -42,10 +42,10 @@ jQuery(document).ready(function ($) {
     nextLocationInit: function (changeObj)
     {
       $('<p>- new page is ready, new html is injected, now we can start animations</p>').css('height', 0).appendTo($("#logs")).animate({height: 16});
-      var txt = $("#content", $('<div></div>').html(changeObj.data)).html();
+      var txt = $("#content", $('<div></div>').html(changeObj.data));
       document.title = changeObj.toTitle;
 
-      $("#content").html(txt).fadeIn(600);
+      $("#content").html(txt.html()).fadeIn(600);
       return 600;
     },
     locationDidChange: function (changeObj)

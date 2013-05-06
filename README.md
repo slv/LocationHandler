@@ -117,10 +117,12 @@ Javascript Library for manage url changes in browser. jQuery needed
             {
                 // suppose to get the content of div with id="content" of next page and inject into the div with id="content"
                 // in current page
-                var newContent = $("#content", $('<div></div>').html(changeObj.data).html());
+                var newContent = $("#content", $('<div></div>').html(changeObj.data));
 
                 // fade out container div
-            $("#content").fadeOut(600);
+                $("#content").fadeOut(600, function () {
+                    $("#content").html(newContent.html());
+                });
 
                 // return integer (milliseconds) to wait for finish fadeOut
                 return 600;
@@ -128,7 +130,7 @@ Javascript Library for manage url changes in browser. jQuery needed
             nextLocationInit: function (changeObj)
             {
                 // inject newContent and fade in
-                $("#content").html(newContent).fadeIn(600);
+                $("#content").fadeIn(600);
 
                 // return integer (milliseconds) to wait for finish fadeOut
                 return 600;
